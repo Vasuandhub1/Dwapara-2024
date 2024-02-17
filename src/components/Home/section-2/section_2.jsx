@@ -1,6 +1,6 @@
 import React from 'react'
 import group from './Group.svg'
-import image_com from "./Image-container.svg"
+import image_com from "../../../assets/photo1.jpg"
 import atom from "./Work Together Image.svg"
 import image1 from "./WhatsApp Image 2024-02-17 at 7.51.40 AM.jpeg"
 import image2 from "./WhatsApp Image 2024-02-17 at 7.57.48 AM.jpeg"

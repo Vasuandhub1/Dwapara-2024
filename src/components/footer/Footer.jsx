@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
 function Footer() {
   return (
     <div className="w-full text-white lg:w-100 px-4 lg:px-[80px] py-[90px] flex flex-col justify-center bg-[#043873] font-mono">
