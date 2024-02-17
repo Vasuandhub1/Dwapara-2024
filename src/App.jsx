@@ -11,6 +11,14 @@ function App() {
     <div>
       <Section_2></Section_2>
       <Section_6></Section_6>
+      <Section4></Section4>
+      <Section4></Section4>
+      <Section5></Section5>
+      <Section7></Section7>
+      <Section7></Section7>
+      <Footer></Footer>
+      <Contactus></Contactus>
+
     </div>
   )
 }
