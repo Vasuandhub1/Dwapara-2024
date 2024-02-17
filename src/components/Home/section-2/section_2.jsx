@@ -1,6 +1,6 @@
 import React from 'react'
 import group from './Group.svg'
-import image_com from "./Image-container.svg"
+import image_com from "../../../assets/photo1.jpg"
 import atom from "./Work Together Image.svg"
 
 export default function Section_2() {
