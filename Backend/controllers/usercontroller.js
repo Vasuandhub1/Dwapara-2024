@@ -1,12 +1,18 @@
-
 const userModel = require ("../models/userModel.js")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const schedule = require("../models/schedule.js")
+const nodemail = require("nodemailer")
 
+let setemail=""
 const register = async (req , res) =>{
     
     try {
-        const {username , email , password} = req.body
+       
+  
+
+        const {username , email , password , cnfPassword} = req.body
+        setemail=email
 
         if (!username || !email || !password){
              return res.status(400).json({
@@ -44,16 +50,15 @@ const register = async (req , res) =>{
          })
     }
 
-    const token = jwt.sign({userId : createdUser._id} , process.env.JWT_SECRET , {expiresIn : '15d'})
+    const token = jwt.sign({userid : createdUser._id} , process.env.JWT_SECRET , {expiresIn : '15d'})
 
-    res.cookie('jwt-token' , token , {
-        httpOnly : true,
-    })
+    res.cookie('jwttoken' , token )
 
     res.status(201).json ({
          success : true,
          message : "User Created Successfully ",
-         createdUser
+         createdUser,
+    
     })
 
     }
@@ -94,7 +99,7 @@ const login= async(req,res)=>{
             }) 
         }
         const token=jwt.sign({userid:userexist._id},process.env.JWT_SECRET , {expiresIn : '15d'})
-        res.cookie("jwt-token",token)
+        res.cookie("jwttoken",token)
          return res.status(200).json({
             success:true,
             message:"user logged in sucessfully",
@@ -109,4 +114,124 @@ const login= async(req,res)=>{
     }
 }
 
-module.exports={register , login}
+const logout = async(req , res) =>{
+    
+    try {
+
+        res.cookie ("jwttoken" , "")
+        res.status(200).json({
+             success : false,
+             IsLoggedIn : false,
+             message : "User Logged out sucessfully"
+        })
+         
+    }
+    catch (error){
+        res.status(500).json({
+            success : false,
+            message : error.message
+       })
+    }
+
+}
+
+
+//  GetLoggedInUser :-
+const loggedInUser = async (req , res) =>{
+    
+      try {
+        console.log(req.user.schedule.length)
+        const loggedInUser = req.user
+         return res.status(200).json({
+             success : true,
+             schedule : loggedInUser
+         })
+      }
+      catch (error) {
+         return res.status(500).json({
+             success : false,
+             message : error.message
+         })
+      }
+   
+
+}
+
+//  Get All the schedules for loggedIn user :-
+const getUserSchedule = async (req , res) =>{
+    
+     try {
+        
+        const user = await userModel.findById(req.user._id).populate("schedule");
+
+     
+        return res.status(200).json({
+             success : true,
+             message : "All Schedules",
+             schedules : user.schedule
+        })
+
+         
+
+         
+
+     }
+     catch (error){
+         return res.status(500).json({
+             success : false,
+             message : error.message
+         })
+     }
+
+}
+
+
+  //  Nodemailer implementation :-
+
+   
+function SendingMail (req , res){
+ 
+    
+  const transporter = nodemail.createTransport({
+    service : "gmail",
+    auth : {
+      user : "vasusingh9691@gmail.com",
+      pass : "mpkkkevxiavrjykw"
+    }
+ })
+
+ const otp = Math.floor(Math.random() * 10000)
+  const mailOptions = {
+    from : "vasusingh9691@gmail.com",
+    to : setemail ,
+    html : `<h1>Your verification code is <h1 className= "text-blue-500">${otp}</h1></h1>`,
+    subject : "Authentication Verification"
+ }
+
+
+ //  Send Email :-
+ transporter.sendMail(mailOptions , function (error , info) {
+   
+     if (error) {
+       return res.status(400).json({
+         success : false,
+         message : error.message
+       })
+     }
+     else {
+        return res.status(200).json({
+            success:true,
+            message:"Email Verification Send ",
+            otp
+        })
+    }
+
+    
+
+ })
+
+    
+}
+
+
+module.exports={register , login , logout , loggedInUser , getUserSchedule , SendingMail} 
