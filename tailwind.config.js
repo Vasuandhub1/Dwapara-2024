@@ -10,7 +10,7 @@ export default {
       'footer-texture': "url('/img/footer-texture.png')",
     }},
     screens: {
-      'sm': '640px',
+      'sm': '390px',
       // => @media (min-width: 640px) { ... }
 
       'md': '768px',
