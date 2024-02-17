@@ -13,6 +13,14 @@ const userSchema = new mongoose.Schema({
          type : String,
          required : true
      },
+    
+     schedule : [
+        {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "schedule",
+          
+        }
+     ]
 } , {timestamps : true})
 
 
